@@ -1,0 +1,15 @@
+<%- include('partials/header') %>
+
+<div class="status-card status-ended">
+  <div class="status-icon">📊</div>
+  <h2>投票已结束</h2>
+  <p class="vote-note">感谢所有参与者的支持！以下是投票结果汇总</p>
+</div>
+
+<%- include('partials/results', { results, totalVotes }) %>
+
+<div class="back-link">
+  <a href="/" class="btn btn-outline">返回首页</a>
+</div>
+
+<%- include('partials/footer') %>

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title><%= typeof title !== 'undefined' ? title : '投票系统' %></title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="container">
+    <header class="site-header">
+      <h1 class="site-title">研究生暑期安排问卷调查</h1>
+      <p class="site-desc">你的选择会影响我们对研究生暑期安排的了解，感谢参与</p>
+    </header>
+    <main class="main-content">
+<% if (typeof message !== 'undefined' && message) { %>
+      <div class="message"><%= message %></div>
+<% } %>

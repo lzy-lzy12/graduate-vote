@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>管理后台 — <%= title %></title>
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .dashboard-layout { max-width: 900px; }
+    .dashboard-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; padding: 20px 0; }
+    .dashboard-header h1 { font-size: 20px; margin: 0; }
+    .dashboard-nav { display: flex; gap: 8px; align-items: center; }
+    .dashboard-nav a { font-size: 14px; color: #666; text-decoration: none; padding: 6px 12px; border-radius: 6px; }
+    .dashboard-nav a:hover { background: #f0f0f0; }
+    .status-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 13px; font-weight: 600; }
+    .status-active { background: #e8f5e9; color: #2e7d32; }
+    .status-waiting { background: #fff8e1; color: #f57f17; }
+    .status-ended { background: #fce4ec; color: #c62828; }
+    .panel { background: #fff; border-radius: 10px; padding: 20px; margin-bottom: 16px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+    .panel h2 { font-size: 16px; margin: 0 0 16px 0; color: #333; }
+    .settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .settings-grid .form-group { margin: 0; }
+    .qr-section { text-align: center; padding: 20px; }
+    .qr-section img { width: 180px; height: 180px; border-radius: 8px; }
+    .qr-url { font-size: 12px; color: #999; word-break: break-all; margin-top: 8px; }
+    .btn-sm { padding: 6px 14px; font-size: 13px; }
+    .inline-form { display: inline; }
+    .total-votes { font-size: 24px; font-weight: 700; color: #1976d2; }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (max-width: 640px) {
+      .settings-grid, .two-col { grid-template-columns: 1fr; }
+      .dashboard-header { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container dashboard-layout">
+    <div class="dashboard-header">
+      <h1>📋 管理后台</h1>
+      <div class="dashboard-nav">
+        <span class="status-badge status-<%= status %>">
+          <%= status === 'active' ? '🟢 进行中' : status === 'not_started' ? '⏸ 未开始' : '🔴 已结束' %>
+        </span>
+        <a href="/" target="_blank">投票页</a>
+        <a href="/admin/logout">退出</a>
+      </div>
+    </div>
+
+    <% if (message) { %><div class="alert alert-success"><%= message %></div><% } %>
+
+    <!-- 二维码 + 统计概览 -->
+    <div class="two-col">
+      <div class="panel qr-section">
+        <h2>📱 投票二维码</h2>
+        <% if (qrDataUrl) { %>
+        <img src="<%= qrDataUrl %>" alt="投票二维码">
+        <% } else { %>
+        <p style="color:#999;">二维码加载中...</p>
+        <% } %>
+        <div class="qr-url"><%= baseUrl %>/</div>
+        <p style="font-size:12px;color:#999;margin-top:8px;">长按保存二维码，分享到小红书 / 抖音</p>
+      </div>
+      <div class="panel" style="display:flex;flex-direction:column;justify-content:center;text-align:center;">
+        <h2>📊 数据概览</h2>
+        <div class="total-votes"><%= totalVotes %></div>
+        <p style="color:#666;margin:4px 0 0 0;">总投票人数</p>
+      </div>
+    </div>
+
+    <!-- 时间设置 -->
+    <div class="panel">
+      <h2>⏰ 投票时间设置</h2>
+      <form method="POST" action="/admin/settings" class="settings-grid">
+        <div class="form-group">
+          <label for="start_time">开始时间</label>
+          <input type="datetime-local" name="start_time" id="start_time" class="form-input"
+            value="<%= settings.start_time ? new Date(settings.start_time).toISOString().slice(0,16) : '' %>">
+        </div>
+        <div class="form-group">
+          <label for="end_time">截止时间</label>
+          <input type="datetime-local" name="end_time" id="end_time" class="form-input"
+            value="<%= settings.end_time ? new Date(settings.end_time).toISOString().slice(0,16) : '' %>">
+        </div>
+        <div style="grid-column: 1 / -1;">
+          <button type="submit" class="btn btn-primary btn-sm">保存设置</button>
+          <button type="button" class="btn btn-outline btn-sm" onclick="document.getElementById('start_time').value='';document.getElementById('end_time').value='';this.form.submit()">清除时间</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- 各题结果 -->
+    <%- include('partials/results', { results, totalVotes }) %>
+
+    <!-- 修改密码 -->
+    <div class="panel">
+      <h2>🔒 修改管理密码</h2>
+      <form method="POST" action="/admin/password" style="max-width:360px;">
+        <div class="form-group">
+          <label for="old_password">原密码</label>
+          <input type="password" name="old_password" id="old_password" class="form-input" required>
+        </div>
+        <div class="form-group">
+          <label for="new_password">新密码（至少4位）</label>
+          <input type="password" name="new_password" id="new_password" class="form-input" required minlength="4">
+        </div>
+        <button type="submit" class="btn btn-primary btn-sm">修改密码</button>
+      </form>
+    </div>
+
+    <footer style="text-align:center;padding:20px 0;color:#999;font-size:12px;">
+      <p>研究生暑期安排问卷调查系统</p>
+    </footer>
+  </div>
+</body>
+</html>

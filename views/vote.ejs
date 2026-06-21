@@ -1,0 +1,83 @@
+<%- include('partials/header') %>
+
+<% if (status === 'not_started') { %>
+  <div class="status-card status-waiting">
+    <div class="status-icon">⏳</div>
+    <h2>投票尚未开始</h2>
+    <p>请等待发布者设置投票时间后参与</p>
+    <% if (settings.start_time) { %>
+      <p class="time-info">计划开始时间：<%= new Date(settings.start_time).toLocaleString('zh-CN') %></p>
+    <% } %>
+  </div>
+
+<% } else if (status === 'ended') { %>
+  <div class="status-card status-ended">
+    <div class="status-icon">📊</div>
+    <h2>投票已结束</h2>
+    <p>感谢所有参与者的支持！</p>
+  </div>
+  <%- include('partials/results', { results, totalVotes }) %>
+
+<% } else if (alreadyVoted || hasVoted) { %>
+  <div class="status-card status-done">
+    <div class="status-icon">✓</div>
+    <h2>感谢参与！</h2>
+    <p>你已经成功提交了问卷</p>
+    <p class="vote-note">每人每天仅限提交一次</p>
+    <a href="/" class="btn btn-outline">刷新页面</a>
+  </div>
+  <%- include('partials/results', { results, totalVotes }) %>
+
+<% } else { %>
+  <div class="vote-count">
+    已投票人数：<strong><%= typeof totalVotes !== 'undefined' ? totalVotes : 0 %></strong>
+  </div>
+
+  <form method="POST" action="/vote" class="vote-form" id="voteForm">
+    <% questions.forEach((q, qi) => { %>
+    <div class="question-card">
+      <div class="question-title"><%= q.title %></div>
+      <div class="options-list">
+        <% q.options.forEach((opt, oi) => { %>
+        <label class="option-item">
+          <input type="radio" name="q<%= qi + 1 %>" value="<%= oi %>" class="option-radio" required>
+          <span class="option-text"><%= opt %></span>
+        </label>
+        <% }) %>
+        <label class="option-item option-other">
+          <input type="radio" name="q<%= qi + 1 %>" value="other" class="option-radio">
+          <span class="option-text">其他（请注明）</span>
+        </label>
+        <div class="other-input-wrap" style="display:none;">
+          <input type="text" name="q<%= qi + 1 %>_other" class="other-input" placeholder="请输入你的其他原因..." maxlength="200">
+        </div>
+      </div>
+    </div>
+    <% }) %>
+
+    <button type="submit" class="btn btn-primary btn-submit">提交问卷</button>
+  </form>
+<% } %>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('.option-other .option-radio').forEach(function(radio) {
+    radio.addEventListener('change', function() {
+      var wrap = this.closest('.options-list').querySelector('.other-input-wrap');
+      if (this.checked) {
+        wrap.style.display = 'block';
+        wrap.querySelector('.other-input').focus();
+      }
+    });
+  });
+  document.querySelectorAll('.option-item:not(.option-other) .option-radio').forEach(function(radio) {
+    radio.addEventListener('change', function() {
+      var wrap = this.closest('.options-list').querySelector('.other-input-wrap');
+      wrap.style.display = 'none';
+      wrap.querySelector('.other-input').value = '';
+    });
+  });
+});
+</script>
+
+<%- include('partials/footer') %>

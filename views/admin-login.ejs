@@ -1,0 +1,18 @@
+<%- include('partials/header') %>
+
+<div class="admin-card">
+  <h2 class="admin-title">管理员登录</h2>
+  <% if (error) { %>
+  <div class="alert alert-error"><%= error %></div>
+  <% } %>
+  <form method="POST" action="/admin" class="login-form">
+    <div class="form-group">
+      <label for="password">管理密码</label>
+      <input type="password" name="password" id="password" class="form-input" placeholder="请输入管理密码" required autofocus>
+    </div>
+    <button type="submit" class="btn btn-primary btn-block">登录</button>
+  </form>
+  <p class="back-link"><a href="/">← 返回投票页</a></p>
+</div>
+
+<%- include('partials/footer') %>

@@ -1,0 +1,42 @@
+<% if (results && results.length > 0) { %>
+<section class="results-section">
+  <h2 class="section-title">投票结果汇总（共 <%= totalVotes %> 票）</h2>
+  <% results.forEach(function(r, qi) { %>
+  <div class="result-card">
+    <h3 class="result-question"><%= r.question.title %></h3>
+    <div class="result-bars">
+      <% r.question.options.forEach(function(opt, oi) { %>
+      <% var count = r.counts[oi] || 0; %>
+      <% var pct = totalVotes > 0 ? (count / totalVotes * 100).toFixed(1) : 0; %>
+      <div class="result-row">
+        <div class="result-label"><%= opt %></div>
+        <div class="result-bar-wrap">
+          <div class="result-bar" style="width: <%= pct %>%"></div>
+        </div>
+        <div class="result-stat"><%= count %> 票 (<%= pct %>%)</div>
+      </div>
+      <% }); %>
+      <% if (r.counts.other > 0) { %>
+      <div class="result-row">
+        <div class="result-label">其他（请注明）</div>
+        <div class="result-bar-wrap">
+          <div class="result-bar result-bar-other" style="width: <%= (r.counts.other / totalVotes * 100).toFixed(1) %>%"></div>
+        </div>
+        <div class="result-stat"><%= r.counts.other %> 票 (<%= (r.counts.other / totalVotes * 100).toFixed(1) %>%)</div>
+      </div>
+      <% } %>
+    </div>
+    <% if (r.others && r.others.length > 0) { %>
+    <details class="other-details">
+      <summary>查看 "其他" 填写内容（<%= r.others.length %> 条）</summary>
+      <ul class="other-list">
+        <% r.others.forEach(function(t) { %>
+        <li><%= t %></li>
+        <% }); %>
+      </ul>
+    </details>
+    <% } %>
+  </div>
+  <% }); %>
+</section>
+<% } %>
