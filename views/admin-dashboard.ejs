@@ -119,6 +119,14 @@ if(f)f.addEventListener("submit",function(){if(si.value)si.value=toUTC(si.value)
       </form>
     </div>
 
+    
+    <div class="panel">
+      <h2 style="color:#c62828;">重置所有数据</h2>
+      <p style="font-size:14px;color:#888;margin-bottom:12px;">重置后投票记录、起止时间和管理密码将被清空。</p>
+      <form method="POST" action="/admin/reset" onsubmit="return confirm('确定要重置所有数据吗？')">
+        <button type="submit" class="btn btn-outline" style="color:#c62828;border-color:#c62828;">重置数据</button>
+      </form>
+    </div>
     <footer style="text-align:center;padding:20px 0;color:#999;font-size:12px;">
       <p>研究生暑期安排问卷调查系统</p>
     </footer>
