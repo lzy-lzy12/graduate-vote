@@ -141,6 +141,13 @@ function getVoteStatus() {
   return 'active';
 }
 
+
+function resetData() {
+  try { fs.unlinkSync(SETTINGS_FILE); } catch(e) {}
+  try { fs.unlinkSync(VOTES_FILE); } catch(e) {}
+  readSettings();
+}
+
 module.exports = {
   addVote,
   getTotalVotes,
