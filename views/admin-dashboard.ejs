@@ -74,18 +74,30 @@
         <div class="form-group">
           <label for="start_time">开始时间</label>
           <input type="datetime-local" name="start_time" id="start_time" class="form-input"
-            value="<%= settings.start_time ? (function(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')+'T'+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')})(new Date(settings.start_time)) : '' %>">
+            data-utc="<%= settings.start_time ? settings.start_time : '' %>">
         </div>
         <div class="form-group">
           <label for="end_time">截止时间</label>
           <input type="datetime-local" name="end_time" id="end_time" class="form-input"
-            value="<%= settings.end_time ? (function(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')+'T'+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')})(new Date(settings.end_time)) : '' %>">
+            data-utc="<%= settings.end_time ? settings.end_time : '' %>">
         </div>
         <div style="grid-column: 1 / -1;">
           <button type="submit" class="btn btn-primary btn-sm">保存设置</button>
           <button type="button" class="btn btn-outline btn-sm" onclick="document.getElementById('start_time').value='';document.getElementById('end_time').value='';this.form.submit()">清除时间</button>
         </div>
       </form>
+<script>
+function toLocal(d){if(!d)return d;var dt=new Date(d);return dt.getFullYear()+"-"+String(dt.getMonth()+1).padStart(2,"0")+"-"+String(dt.getDate()).padStart(2,"0")+"T"+String(dt.getHours()).padStart(2,"0")+":"+String(dt.getMinutes()).padStart(2,"0")}
+function toUTC(s){if(!s)return s;return new Date(s).toISOString()}
+document.addEventListener("DOMContentLoaded",function(){
+var si=document.getElementById("start_time"),ei=document.getElementById("end_time");
+if(si&&si.dataset.utc)si.value=toLocal(si.dataset.utc);
+if(ei&&ei.dataset.utc)ei.value=toLocal(ei.dataset.utc);
+var f=document.querySelector("form[action*=/admin/settings]");
+if(f)f.addEventListener("submit",function(){if(si.value)si.value=toUTC(si.value);if(ei.value)ei.value=toUTC(ei.value)})
+})
+</script>
+
     </div>
 
     <!-- 各题结果 -->
