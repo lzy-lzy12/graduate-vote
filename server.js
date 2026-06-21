@@ -218,8 +218,8 @@ app.get('/admin/dashboard', requireAdmin, async (req, res) => {
 
 // ========== 路由：更新设置 ==========
 app.post('/admin/settings', requireAdmin, async (req, res) => {
-  const start_time = req.body.start_time || null;
-  const end_time = req.body.end_time || null;
+  const start_time = req.body.start_time ? new Date(req.body.start_time).toISOString() : null;
+  const end_time = req.body.end_time ? new Date(req.body.end_time).toISOString() : null;
   db.updateSettings({ start_time, end_time });
   
   const settings = db.readSettings();
