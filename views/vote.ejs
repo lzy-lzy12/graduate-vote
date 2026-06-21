@@ -29,10 +29,6 @@
   <%- include('partials/results', { results, totalVotes }) %>
 
 <% } else { %>
-  <div class="vote-count">
-    已投票人数：<strong><%= typeof totalVotes !== 'undefined' ? totalVotes : 0 %></strong>
-  </div>
-
   <form method="POST" action="/vote" class="vote-form" id="voteForm">
     <% questions.forEach((q, qi) => { %>
     <div class="question-card">
