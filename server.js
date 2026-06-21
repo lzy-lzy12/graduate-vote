@@ -243,6 +243,13 @@ app.post('/admin/settings', requireAdmin, async (req, res) => {
   }
 });
 
+
+// ========== 路由：重置数据 ==========
+app.post('/admin/reset', requireAdmin, (req, res) => {
+  db.resetData();
+  req.session.destroy();
+  res.redirect('/admin');
+});
 // ========== 路由：修改密码 ==========
 app.post('/admin/password', requireAdmin, (req, res) => {
   const settings = db.readSettings();
