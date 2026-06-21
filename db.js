@@ -126,9 +126,9 @@ function getVoteStatus() {
   const settings = readSettings();
   const now = new Date();
   
-  if (!settings.start_time && !settings.end_time) {
-    return 'not_started';
-  }
+    if (!settings.start_time && !settings.end_time) {
+      return 'active';
+    }
   
   if (settings.start_time && now < new Date(settings.start_time)) {
     return 'not_started';
